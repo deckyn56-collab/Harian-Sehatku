@@ -319,6 +319,49 @@ body {
 /* ============================================
    RESPONSIF
    ============================================ */
+
+/* ============================================
+   LOGIN SECTION
+   ============================================ */
+.login-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.login-card {
+    padding: 40px 32px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-card h1 {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #10b981, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+}
+
+.login-card .subtitle {
+    color: #a0aec0;
+    margin-bottom: 24px;
+}
+
+.login-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.login-actions .btn {
+    flex: 1;
+}
+
 @media (max-width: 640px) {
     .ringkasan-harian {
         grid-template-columns: repeat(2, 1fr);
