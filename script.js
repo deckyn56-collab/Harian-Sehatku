@@ -1,6 +1,6 @@
 // ========== KONFIGURASI SUPABASE ==========
-const SUPABASE_URL = 'https://dazhavdgidhwtedepfzg.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhemhhdmRnaWRod3RlZGVwZnpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NTE0NjcsImV4cCI6MjEwMDQyNzQ2N30.e_sxSOhcCJok1FcexAmYknqjQRvXEil087mDieZ2-88';
+const SUPABASE_URL = 'https://ciyluvqtxdydnjnaisxl.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpeWx1dnF0eGR5ZG5qbmFpc3hsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NTAwNDUsImV4cCI6MjEwMDQyNjA0NX0.UozVCSkCO2CckOxPAVcuJFLcwoP-amydS4jTfcEdsY0';
 
 // ========== STATE ==========
 let currentUser = null;
