@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harian Sehatku</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <h1>🌿 <span>Harian</span>Sehatku</h1>
+            <p class="header-sub">Catat makanmu, raih target harian!</p>
+            <button id="logoutBtn" style="display: none; background: none; border: none; color: #ef4444; cursor: pointer;">Logout</button>
+        </header>
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="dashboard-section">
+            <div class="profil-card glass">
+                <h2>Halo, <span id="userName">Pengguna</span>!</h2>
+                <div class="target-area">
+                    <label for="targetKalori">Target Kalori Harian:</label>
+                    <input type="number" id="targetKalori" placeholder="Contoh: 2000" class="form-input" style="max-width: 150px;">
+                    <button id="setTargetBtn" class="btn btn-secondary">Set Target</button>
+                </div>
+                <div class="ringkasan-harian">
+                    <div class="ringkasan-item">
+                        <span class="label">Kalori</span>
+                        <span class="value" id="totalKalori">0</span>
+                        <span class="sub">/ <span id="targetKaloriDisplay">0</span> kkal</span>
+                    </div>
+                    <div class="ringkasan-item">
+                        <span class="label">Protein</span>
+                        <span class="value" id="totalProtein">0</span>
+                        <span class="sub">g</span>
+                    </div>
+                    <div class="ringkasan-item">
+                        <span class="label">Lemak</span>
+                        <span class="value" id="totalLemak">0</span>
+                        <span class="sub">g</span>
+                    </div>
+                    <div class="ringkasan-item">
+                        <span class="label">Karbo</span>
+                        <span class="value" id="totalKarbo">0</span>
+                        <span class="sub">g</span>
+                    </div>
+                </div>
+                <div class="progres-berat">
+                    <label for="beratBadan">Berat Badan (kg):</label>
+                    <input type="number" id="beratBadan" placeholder="Contoh: 65" class="form-input" style="max-width: 120px;">
+                    <button id="simpanBeratBtn" class="btn btn-secondary">Simpan Berat</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- INPUT MAKANAN -->
+        <section class="form-section">
+            <div class="form-card glass">
+                <h3>🍽️ Tambah Makanan</h3>
+                <div class="form-group">
+                    <input type="text" id="namaMakanan" placeholder="Nama makanan..." class="form-input">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="porsiMakanan" placeholder="Porsi (contoh: 1)" class="form-input" step="0.5" value="1">
+                </div>
+                <button id="tambahMakananBtn" class="btn btn-primary">Tambah</button>
+            </div>
+        </section>
+
+        <!-- DAFTAR MAKANAN -->
+        <section class="list-section">
+            <h3>📋 Catatan Makan Hari Ini</h3>
+            <div id="daftarMakanan" class="catatan-grid">
+                <p class="empty-state">Belum ada makanan yang dicatat hari ini.</p>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <p>© 2026 HarianSehatku</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

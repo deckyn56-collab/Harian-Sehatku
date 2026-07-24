@@ -1,0 +1,354 @@
+/* ============================================
+   RESET & FONT
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 20px;
+    color: #ffffff;
+}
+
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   GLASSMORPHISM
+   ============================================ */
+.glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.app-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.app-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #10b981, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.app-header h1 span {
+    -webkit-text-fill-color: #ffffff;
+}
+
+.header-sub {
+    color: #a0aec0;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* ============================================
+   FORM & INPUT
+   ============================================ */
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: #a0aec0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+/* ============================================
+   DASHBOARD / PROFIL
+   ============================================ */
+.dashboard-section {
+    margin-bottom: 24px;
+}
+
+.profil-card {
+    padding: 24px;
+}
+
+.profil-card h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.profil-card h2 span {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.target-area {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.target-area label {
+    color: #a0aec0;
+    font-size: 14px;
+}
+
+.target-area .form-input {
+    flex: 1;
+    max-width: 150px;
+}
+
+.ringkasan-harian {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.ringkasan-item {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.ringkasan-item .label {
+    display: block;
+    font-size: 12px;
+    color: #a0aec0;
+    margin-bottom: 4px;
+}
+
+.ringkasan-item .value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #10b981;
+}
+
+.ringkasan-item .sub {
+    font-size: 12px;
+    color: #a0aec0;
+}
+
+.progres-berat {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 16px;
+}
+
+.progres-berat label {
+    color: #a0aec0;
+    font-size: 14px;
+}
+
+/* ============================================
+   FORM TAMBAH MAKANAN
+   ============================================ */
+.form-section {
+    margin-bottom: 24px;
+}
+
+.form-card {
+    padding: 20px 24px;
+}
+
+.form-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #ffffff;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+/* ============================================
+   LIST MAKANAN
+   ============================================ */
+.list-section {
+    margin-bottom: 24px;
+}
+
+.list-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #ffffff;
+}
+
+.catatan-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.catatan-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.catatan-item .info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.catatan-item .nama {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.catatan-item .detail {
+    font-size: 13px;
+    color: #a0aec0;
+}
+
+.catatan-item .aksi {
+    display: flex;
+    gap: 8px;
+}
+
+.catatan-item .hapus-btn {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.catatan-item .hapus-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+    grid-column: 1 / -1;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.app-footer {
+    text-align: center;
+    padding: 20px 0;
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 13px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================
+   RESPONSIF
+   ============================================ */
+@media (max-width: 640px) {
+    .ringkasan-harian {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .catatan-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .catatan-item .aksi {
+        justify-content: flex-end;
+    }
+
+    .target-area {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .target-area .form-input {
+        max-width: 100%;
+    }
+
+    .progres-berat {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .progres-berat .form-input {
+        max-width: 100%;
+    }
+}
