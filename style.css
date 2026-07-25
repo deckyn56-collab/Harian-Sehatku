@@ -1,5 +1,5 @@
 /* ============================================
-   RESET & FONT
+   RESET & FONT (Earth & Sage Theme)
    ============================================ */
 * {
     margin: 0;
@@ -8,28 +8,17 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    font-family: 'Nunito', sans-serif;
+    background: #F7F5F0;
+    color: #3E4A3A;
     min-height: 100vh;
     padding: 20px;
-    color: #ffffff;
+    line-height: 1.6;
 }
 
 .app-container {
     max-width: 800px;
     margin: 0 auto;
-}
-
-/* ============================================
-   GLASSMORPHISM
-   ============================================ */
-.glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* ============================================
@@ -43,20 +32,37 @@ body {
 .app-header h1 {
     font-size: 32px;
     font-weight: 700;
-    background: linear-gradient(135deg, #10b981, #34d399);
+    color: #3E4A3A;
+}
+
+.app-header h1 span {
+    background: linear-gradient(135deg, #A8C3A0, #D5DFD0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-.app-header h1 span {
-    -webkit-text-fill-color: #ffffff;
+.header-sub {
+    color: #6B7A66;
+    font-size: 16px;
 }
 
-.header-sub {
-    color: #a0aec0;
-    font-size: 14px;
-    margin-top: 4px;
+/* ============================================
+   KARTU & ELEMEN UTAMA
+   ============================================ */
+.profil-card, .form-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 24px 28px;
+    box-shadow: 0 8px 30px rgba(168, 195, 160, 0.15);
+    border: 1px solid rgba(213, 223, 208, 0.3);
+    transition: all 0.3s ease;
+    margin-bottom: 24px;
+}
+
+.profil-card:hover, .form-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(168, 195, 160, 0.25);
 }
 
 /* ============================================
@@ -64,187 +70,105 @@ body {
    ============================================ */
 .form-input {
     width: 100%;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: #ffffff;
+    padding: 14px 20px;
+    background: #FBF9F6;
+    border: 2px solid #D5DFD0;
+    border-radius: 16px;
+    color: #3E4A3A;
     font-size: 15px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito', sans-serif;
     transition: all 0.3s ease;
     outline: none;
 }
 
 .form-input:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    border-color: #A8C3A0;
+    box-shadow: 0 0 0 4px rgba(168, 195, 160, 0.15);
 }
 
 .form-input::placeholder {
-    color: rgba(255, 255, 255, 0.35);
+    color: #A8BAA3;
 }
 
+/* ============================================
+   TOMBOL
+   ============================================ */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 12px 24px;
+    padding: 14px 32px;
     border: none;
-    border-radius: 12px;
-    font-size: 15px;
+    border-radius: 50px;
+    font-size: 16px;
     font-weight: 600;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito', sans-serif;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #10b981, #34d399);
-    color: #ffffff;
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, #A8C3A0, #D5DFD0);
+    color: #FFFFFF;
+    box-shadow: 0 4px 15px rgba(168, 195, 160, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 8px 25px rgba(168, 195, 160, 0.4);
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: #a0aec0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(168, 195, 160, 0.15);
+    color: #3E4A3A;
+    border: 1px solid #D5DFD0;
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
+    background: rgba(168, 195, 160, 0.25);
+    transform: translateY(-2px);
 }
 
 /* ============================================
-   DASHBOARD / PROFIL
+   DASHBOARD & RINGKASAN
    ============================================ */
-.dashboard-section {
-    margin-bottom: 24px;
-}
-
-.profil-card {
-    padding: 24px;
-}
-
-.profil-card h2 {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 16px;
-}
-
-.profil-card h2 span {
-    background: linear-gradient(135deg, #10b981, #34d399);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.target-area {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.target-area label {
-    color: #a0aec0;
-    font-size: 14px;
-}
-
-.target-area .form-input {
-    flex: 1;
-    max-width: 150px;
-}
-
 .ringkasan-harian {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
-    margin-bottom: 20px;
+    margin: 20px 0;
 }
 
 .ringkasan-item {
-    background: rgba(255, 255, 255, 0.04);
-    padding: 12px;
-    border-radius: 12px;
+    background: #FBF9F6;
+    padding: 16px 12px;
+    border-radius: 16px;
     text-align: center;
+    border: 1px solid #D5DFD0;
 }
 
 .ringkasan-item .label {
     display: block;
-    font-size: 12px;
-    color: #a0aec0;
+    font-size: 13px;
+    color: #6B7A66;
     margin-bottom: 4px;
 }
 
 .ringkasan-item .value {
     font-size: 24px;
     font-weight: 700;
-    color: #10b981;
+    color: #A8C3A0;
 }
 
 .ringkasan-item .sub {
-    font-size: 12px;
-    color: #a0aec0;
-}
-
-.progres-berat {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding-top: 16px;
-}
-
-.progres-berat label {
-    color: #a0aec0;
-    font-size: 14px;
+    font-size: 13px;
+    color: #6B7A66;
 }
 
 /* ============================================
-   FORM TAMBAH MAKANAN
+   DAFTAR CATATAN MAKANAN
    ============================================ */
-.form-section {
-    margin-bottom: 24px;
-}
-
-.form-card {
-    padding: 20px 24px;
-}
-
-.form-card h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: #ffffff;
-}
-
-.form-group {
-    margin-bottom: 14px;
-}
-
-/* ============================================
-   LIST MAKANAN
-   ============================================ */
-.list-section {
-    margin-bottom: 24px;
-}
-
-.list-section h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: #ffffff;
-}
-
 .catatan-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -252,29 +176,29 @@ body {
 }
 
 .catatan-item {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 12px;
+    background: #FBF9F6;
+    border: 1px solid #D5DFD0;
+    border-radius: 16px;
     padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
-.catatan-item .info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+.catatan-item:hover {
+    border-color: #A8C3A0;
+    background: #FFFFFF;
 }
 
 .catatan-item .nama {
     font-weight: 600;
-    color: #ffffff;
+    color: #3E4A3A;
 }
 
 .catatan-item .detail {
-    font-size: 13px;
-    color: #a0aec0;
+    font-size: 14px;
+    color: #6B7A66;
 }
 
 .catatan-item .aksi {
@@ -283,25 +207,48 @@ body {
 }
 
 .catatan-item .hapus-btn {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    background: rgba(168, 195, 160, 0.15);
+    color: #6B7A66;
     border: none;
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .catatan-item .hapus-btn:hover {
-    background: rgba(239, 68, 68, 0.25);
+    background: #D5DFD0;
+    color: #3E4A3A;
 }
 
+/* ============================================
+   ASISTEN RESEP
+   ============================================ */
+#hasilResep .catatan-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+#hasilResep .catatan-item .nama {
+    font-size: 18px;
+}
+
+#hasilResep .catatan-item .detail {
+    font-size: 14px;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
 .empty-state {
     text-align: center;
     padding: 40px 20px;
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 14px;
+    color: #A8BAA3;
+    font-size: 16px;
     grid-column: 1 / -1;
 }
 
@@ -311,14 +258,30 @@ body {
 .app-footer {
     text-align: center;
     padding: 20px 0;
-    color: rgba(255, 255, 255, 0.2);
-    font-size: 13px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: #A8BAA3;
+    font-size: 14px;
+    border-top: 1px solid #D5DFD0;
 }
 
 /* ============================================
-   RESPONSIF
+   TARGET AREA
    ============================================ */
+.target-area, .progres-berat {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.target-area label, .progres-berat label {
+    color: #3E4A3A;
+    font-weight: 600;
+}
+
+.target-area .form-input, .progres-berat .form-input {
+    max-width: 150px;
+}
 
 /* ============================================
    LOGIN SECTION
@@ -331,24 +294,31 @@ body {
 }
 
 .login-card {
+    background: #FFFFFF;
     padding: 40px 32px;
+    border-radius: 24px;
     max-width: 400px;
     width: 100%;
     text-align: center;
+    box-shadow: 0 8px 30px rgba(168, 195, 160, 0.15);
+    border: 1px solid rgba(213, 223, 208, 0.3);
 }
 
 .login-card h1 {
     font-size: 32px;
     font-weight: 700;
-    background: linear-gradient(135deg, #10b981, #34d399);
+    color: #3E4A3A;
+}
+
+.login-card h1 span {
+    background: linear-gradient(135deg, #A8C3A0, #D5DFD0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 8px;
 }
 
 .login-card .subtitle {
-    color: #a0aec0;
+    color: #6B7A66;
     margin-bottom: 24px;
 }
 
@@ -362,6 +332,9 @@ body {
     flex: 1;
 }
 
+/* ============================================
+   RESPONSIF
+   ============================================ */
 @media (max-width: 640px) {
     .ringkasan-harian {
         grid-template-columns: repeat(2, 1fr);
@@ -369,29 +342,29 @@ body {
 
     .catatan-item {
         flex-direction: column;
-        align-items: stretch;
+        align-items: flex-start;
         gap: 8px;
     }
 
     .catatan-item .aksi {
+        width: 100%;
         justify-content: flex-end;
     }
 
-    .target-area {
+    .target-area, .progres-berat {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .target-area .form-input {
+    .target-area .form-input, .progres-berat .form-input {
         max-width: 100%;
     }
 
-    .progres-berat {
+    .login-actions {
         flex-direction: column;
-        align-items: stretch;
     }
 
-    .progres-berat .form-input {
-        max-width: 100%;
+    .profil-card, .form-card {
+        padding: 18px 16px;
     }
 }

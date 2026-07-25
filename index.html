@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harian Sehatku</title>
+    <title>🌿 Harian Sehatku</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
 
         <!-- ========== SECTION LOGIN ========== -->
         <section id="loginSection" class="login-section">
-            <div class="login-card glass">
-                <h1>🌿 HarianSehatku</h1>
+            <div class="login-card">
+                <h1>🌿 <span>Harian</span>Sehatku</h1>
                 <p class="subtitle">Masuk untuk mulai mencatat</p>
                 <div class="form-group">
                     <input type="email" id="loginEmail" placeholder="Email" class="form-input">
@@ -37,41 +37,41 @@
                     <h1>🌿 <span>Harian</span>Sehatku</h1>
                     <button id="logoutBtn" class="btn btn-secondary" style="padding: 6px 16px;">Logout</button>
                 </div>
-                <p class="header-sub">Halo, <span id="userName">Pengguna</span>!</p>
+                <p class="header-sub">Halo, <span id="userName">Pengguna</span>! 👋</p>
             </header>
 
             <!-- DASHBOARD -->
             <section class="dashboard-section">
-                <div class="profil-card glass">
+                <div class="profil-card">
                     <div class="target-area">
-                        <label for="targetKalori">Target Kalori Harian:</label>
+                        <label for="targetKalori">🎯 Target Kalori Harian:</label>
                         <input type="number" id="targetKalori" placeholder="2000" class="form-input" style="max-width: 150px;">
                         <button id="setTargetBtn" class="btn btn-secondary">Set Target</button>
                     </div>
                     <div class="ringkasan-harian">
                         <div class="ringkasan-item">
-                            <span class="label">Kalori</span>
+                            <span class="label">🔥 Kalori</span>
                             <span class="value" id="totalKalori">0</span>
-                            <span class="sub">/ <span id="targetKaloriDisplay">0</span> kkal</span>
+                            <span class="sub">/ <span id="targetKaloriDisplay">0</span></span>
                         </div>
                         <div class="ringkasan-item">
-                            <span class="label">Protein</span>
+                            <span class="label">💪 Protein</span>
                             <span class="value" id="totalProtein">0</span>
                             <span class="sub">g</span>
                         </div>
                         <div class="ringkasan-item">
-                            <span class="label">Lemak</span>
+                            <span class="label">🥑 Lemak</span>
                             <span class="value" id="totalLemak">0</span>
                             <span class="sub">g</span>
                         </div>
                         <div class="ringkasan-item">
-                            <span class="label">Karbo</span>
+                            <span class="label">🍚 Karbo</span>
                             <span class="value" id="totalKarbo">0</span>
                             <span class="sub">g</span>
                         </div>
                     </div>
                     <div class="progres-berat">
-                        <label for="beratBadan">Berat Badan (kg):</label>
+                        <label for="beratBadan">⚖️ Berat Badan (kg):</label>
                         <input type="number" id="beratBadan" placeholder="65" class="form-input" style="max-width: 120px;">
                         <button id="simpanBeratBtn" class="btn btn-secondary">Simpan Berat</button>
                     </div>
@@ -80,7 +80,7 @@
 
             <!-- FORM TAMBAH MAKANAN -->
             <section class="form-section">
-                <div class="form-card glass">
+                <div class="form-card">
                     <h3>🍽️ Tambah Makanan</h3>
                     <div class="form-group">
                         <input type="text" id="namaMakanan" placeholder="Nama makanan..." class="form-input">
@@ -96,13 +96,26 @@
             <section class="list-section">
                 <h3>📋 Catatan Makan Hari Ini</h3>
                 <div id="daftarMakanan" class="catatan-grid">
-                    <p class="empty-state">Belum ada makanan yang dicatat hari ini.</p>
+                    <p class="empty-state">📭 Belum ada makanan yang dicatat hari ini.</p>
+                </div>
+            </section>
+
+            <!-- ====== ASISTEN RESEP ====== -->
+            <section class="form-section">
+                <div class="form-card">
+                    <h3>🥗 Asisten Resep Sehat</h3>
+                    <p class="header-sub" style="color: #6B7A66; margin-bottom: 12px;">Masukkan bahan yang tersedia, dapatkan ide resep!</p>
+                    <div class="form-group">
+                        <input type="text" id="bahanResep" placeholder="Contoh: ayam, wortel, kentang" class="form-input">
+                    </div>
+                    <button id="cariResepBtn" class="btn btn-primary">Cari Resep</button>
+                    <div id="hasilResep" style="margin-top: 16px;"></div>
                 </div>
             </section>
 
             <!-- FOOTER -->
             <footer class="app-footer">
-                <p>© 2026 HarianSehatku — Dibuat dengan ❤️</p>
+                <p>© 2026 HarianSehatku — Dibuat dengan ❤️ + 🌿</p>
             </footer>
 
         </section>
