@@ -1,0 +1,6 @@
+diet-app/
+├── api/
+│   └── gemini.js        ← Serverless function untuk proxy Gemini
+├── index.html
+├── style.css
+└── script.js
