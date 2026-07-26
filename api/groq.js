@@ -97,4 +97,4 @@ export default async function handler(req, res) {
         console.error('❌ Groq API error:', error);
         return res.status(500).json({ error: error.message || 'Terjadi kesalahan' });
     }
-                    }
+}
