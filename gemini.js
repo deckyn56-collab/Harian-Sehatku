@@ -50,6 +50,9 @@ export default async function handler(req, res) {
             content: message || 'Analisis gambar bahan makanan ini dan berikan rekomendasi resep.'
         });
 
+        console.log('📤 Mengirim request ke Gemini API...');
+        console.log('📤 Messages:', JSON.stringify(messages, null, 2));
+
         // Panggil Gemini API dengan endpoint OpenAI-compatible
         const response = await fetch(
             'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
@@ -69,12 +72,28 @@ export default async function handler(req, res) {
 
         const data = await response.json();
 
+        console.log('📥 Response status:', response.status);
+        console.log('📥 Response data:', JSON.stringify(data, null, 2));
+
         if (!response.ok) {
             console.error('Gemini API error:', data);
             throw new Error(data.error?.message || `HTTP ${response.status}`);
         }
 
+        // Cek struktur respons
+        if (!data.choices || data.choices.length === 0) {
+            console.error('❌ Tidak ada choices dalam respons:', data);
+            throw new Error('Tidak ada respons dari Gemini');
+        }
+
         const reply = data.choices[0]?.message?.content;
+        
+        if (!reply) {
+            console.error('❌ Tidak ada content dalam choices:', data.choices);
+            throw new Error('Respons kosong dari Gemini');
+        }
+
+        console.log('✅ Reply dari Gemini:', reply);
         return res.status(200).json({ reply });
 
     } catch (error) {
