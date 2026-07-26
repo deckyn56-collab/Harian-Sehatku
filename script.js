@@ -716,6 +716,39 @@ async function loadWeightChart() {
     }
 }
 
+// ========== FUNGSI GEMINI AI (PANGGIL SERVERLESS) ==========
+async function callGemini(message, imageBase64 = null, history = []) {
+    try {
+        console.log('📤 Memanggil Gemini API...');
+        const response = await fetch('/api/gemini', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                imageBase64: imageBase64,
+                history: history
+            })
+        });
+
+        console.log('📥 Response status:', response.status);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Gemini berhasil dipanggil');
+        return data.reply;
+
+    } catch (error) {
+        console.error('❌ Gemini error:', error);
+        throw error;
+    }
+}
+
 // ========== REKOMENDASI MENU AI ==========
 const rekomendasiMenuBtn = document.getElementById('rekomendasiMenuBtn');
 if (rekomendasiMenuBtn) {
@@ -743,32 +776,20 @@ if (rekomendasiMenuBtn) {
         hasilDiv.innerHTML = '<p class="empty-state">🤖 AI sedang menyusun menu sehat untuk Anda...</p>';
 
         try {
-            const response = await fetch('/api/gemini', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: `Saya memiliki sisa kalori ${sisaKalori} kkal untuk hari ini. 
-                             Berikan rekomendasi menu untuk sarapan, makan siang, dan makan malam. 
-                             Total kalori tidak boleh melebihi ${sisaKalori} kkal.
-                             Respons harus dalam format JSON dengan struktur:
-                             {
-                                 "sarapan": { "nama": "...", "kalori": angka },
-                                 "makan_siang": { "nama": "...", "kalori": angka },
-                                 "makan_malam": { "nama": "...", "kalori": angka },
-                                 "total": angka
-                             }`
-                })
-            });
+            const reply = await callGemini(
+                `Saya memiliki sisa kalori ${sisaKalori} kkal untuk hari ini. 
+                 Berikan rekomendasi menu untuk sarapan, makan siang, dan makan malam. 
+                 Total kalori tidak boleh melebihi ${sisaKalori} kkal.
+                 Respons harus dalam format JSON dengan struktur:
+                 {
+                     "sarapan": { "nama": "...", "kalori": angka },
+                     "makan_siang": { "nama": "...", "kalori": angka },
+                     "makan_malam": { "nama": "...", "kalori": angka },
+                     "total": angka
+                 }`
+            );
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || `HTTP ${response.status}`);
-            }
-
-            const data = await response.json();
-            const cleanJson = data.reply.replace(/```json\s*|\s*```/g, '').trim();
+            const cleanJson = reply.replace(/```json\s*|\s*```/g, '').trim();
             const menu = JSON.parse(cleanJson);
 
             const total = menu.total || (menu.sarapan.kalori + menu.makan_siang.kalori + menu.makan_malam.kalori);
