@@ -1,6 +1,5 @@
 // ========== API GEMINI PROXY (Vercel Serverless Function) ==========
 export default async function handler(req, res) {
-    // Hanya terima metode POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -11,13 +10,12 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { message, history = [], imageBase64 } = req.body;
+        const { message, imageBase64, history = [] } = req.body;
 
         if (!message && !imageBase64) {
             return res.status(400).json({ error: 'No message or image provided' });
         }
 
-        // Bangun konten untuk Gemini
         const contents = [];
         
         if (history && history.length > 0) {
@@ -62,7 +60,6 @@ export default async function handler(req, res) {
                         parts: [{
                             text: `Kamu adalah asisten resep sehat untuk ibu-ibu di Indonesia.
                             Kamu bisa melihat gambar bahan makanan dan memberikan rekomendasi resep.
-                            Jika pengguna mengirimkan gambar, identifikasi bahan-bahan yang terlihat.
                             Berikan rekomendasi resep dengan format JSON:
                             {
                                 "judul": "Nama Resep",
@@ -72,8 +69,7 @@ export default async function handler(req, res) {
                                 "protein": angka,
                                 "lemak": angka,
                                 "karbo": angka
-                            }
-                            Jika multi-turn chat, jawab dengan ramah dan informatif.`
+                            }`
                         }]
                     },
                     contents: contents

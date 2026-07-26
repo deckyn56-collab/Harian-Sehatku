@@ -6,24 +6,60 @@
     <title>🌿 Harian Sehatku</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="app-container">
 
-        <!-- ========== SECTION LOGIN ========== -->
+        <!-- ========== SECTION LOGIN / REGISTER ========== -->
         <section id="loginSection" class="login-section">
             <div class="login-card">
                 <h1>🌿 <span>Harian</span>Sehatku</h1>
-                <p class="subtitle">Masuk untuk mulai mencatat</p>
-                <div class="form-group">
-                    <input type="email" id="loginEmail" placeholder="Email" class="form-input">
+                <p class="subtitle" id="formSubtitle">Masuk untuk mulai mencatat</p>
+
+                <!-- TAB NAVIGASI -->
+                <div class="tab-navigation">
+                    <button class="tab-btn active" data-tab="login" id="tabLoginBtn">Masuk</button>
+                    <button class="tab-btn" data-tab="register" id="tabRegisterBtn">Daftar</button>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="loginPassword" placeholder="Password" class="form-input">
+
+                <!-- FORM LOGIN -->
+                <div id="formLogin" class="auth-form active">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" placeholder="Email" class="form-input">
+                    </div>
+                    <div class="form-group password-wrapper">
+                        <input type="password" id="loginPassword" placeholder="Password" class="form-input">
+                        <button type="button" class="password-toggle" id="toggleLoginPassword" aria-label="Tampilkan password">👁️</button>
+                    </div>
+                    <button id="loginBtn" class="btn btn-primary" style="width: 100%;">Masuk</button>
+                    <p style="margin-top: 12px; font-size: 14px; color: #6B7A66;">
+                        Belum punya akun? <a href="#" id="switchToRegister" style="color: #A8C3A0; font-weight: 600; text-decoration: none;">Daftar di sini</a>
+                    </p>
                 </div>
-                <div class="login-actions">
-                    <button id="loginBtn" class="btn btn-primary">Masuk</button>
-                    <button id="registerBtn" class="btn btn-secondary">Daftar</button>
+
+                <!-- FORM REGISTER -->
+                <div id="formRegister" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <input type="email" id="registerEmail" placeholder="Email" class="form-input">
+                    </div>
+                    <div class="form-group password-wrapper">
+                        <input type="password" id="registerPassword" placeholder="Password" class="form-input">
+                        <button type="button" class="password-toggle" id="toggleRegisterPassword" aria-label="Tampilkan password">👁️</button>
+                    </div>
+                    <div class="form-group password-wrapper">
+                        <input type="password" id="registerConfirmPassword" placeholder="Konfirmasi Password" class="form-input">
+                        <button type="button" class="password-toggle" id="toggleRegisterConfirmPassword" aria-label="Tampilkan password">👁️</button>
+                    </div>
+                    <button id="registerBtn" class="btn btn-primary" style="width: 100%;">Daftar</button>
+                    <p style="margin-top: 12px; font-size: 14px; color: #6B7A66;">
+                        Sudah punya akun? <a href="#" id="switchToLogin" style="color: #A8C3A0; font-weight: 600; text-decoration: none;">Masuk di sini</a>
+                    </p>
+                </div>
+
+                <!-- PESAN NOTIFIKASI -->
+                <div id="registerMessage" style="display: none; margin-top: 16px; padding: 12px; border-radius: 12px; background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7;">
+                    ✅ <span id="registerMessageText"></span>
                 </div>
             </div>
         </section>
@@ -100,16 +136,72 @@
                 </div>
             </section>
 
-            <!-- ====== ASISTEN RESEP ====== -->
+            <!-- ====== REKOMENDASI MENU AI ====== -->
             <section class="form-section">
                 <div class="form-card">
-                    <h3>🥗 Asisten Resep Sehat</h3>
-                    <p class="header-sub" style="color: #6B7A66; margin-bottom: 12px;">Masukkan bahan yang tersedia, dapatkan ide resep!</p>
-                    <div class="form-group">
-                        <input type="text" id="bahanResep" placeholder="Contoh: ayam, wortel, kentang" class="form-input">
+                    <h3>🍽️ Rekomendasi Menu Harian</h3>
+                    <p class="header-sub" style="color: #6B7A66; margin-bottom: 12px;">
+                        Dapatkan saran menu berdasarkan sisa kalori harian Anda.
+                    </p>
+                    <button id="rekomendasiMenuBtn" class="btn btn-primary">✨ Buat Rekomendasi</button>
+                    <div id="hasilRekomendasi" style="margin-top: 16px;"></div>
+                </div>
+            </section>
+
+            <!-- ====== GRAFIK PROGRES ====== -->
+            <section class="form-section">
+                <div class="form-card">
+                    <h3>📈 Progres Berat Badan</h3>
+                    <canvas id="beratChart" style="max-height: 250px; margin: 12px 0;"></canvas>
+                    <button id="refreshChartBtn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;">🔄 Refresh Grafik</button>
+                </div>
+            </section>
+
+            <!-- ====== ASISTEN RESEP AI (DENGAN GAMBAR + CHAT) ====== -->
+            <section class="form-section">
+                <div class="form-card">
+                    <h3>🤖 Asisten Resep AI</h3>
+                    <p class="header-sub" style="color: #6B7A66; margin-bottom: 12px;">
+                        Upload gambar, foto langsung, atau tanyakan!
+                    </p>
+
+                    <!-- Area Upload Gambar & Kamera -->
+                    <div class="upload-area" id="uploadArea" style="border: 2px dashed #D5DFD0; border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease;">
+                        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                            <div style="cursor: pointer;" id="galleryOption">
+                                <span style="font-size: 32px;">🖼️</span>
+                                <p style="color: #6B7A66; margin: 0; font-size: 12px;">Galeri</p>
+                            </div>
+                            <div style="cursor: pointer;" id="cameraOption">
+                                <span style="font-size: 32px;">📷</span>
+                                <p style="color: #6B7A66; margin: 0; font-size: 12px;">Kamera</p>
+                            </div>
+                        </div>
+                        <p style="color: #A8BAA3; font-size: 12px; margin: 8px 0 0 0;">Tap ikon untuk upload atau foto langsung</p>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+                        <div id="imagePreview" style="display: none; margin-top: 12px;">
+                            <img id="previewImg" style="max-width: 100%; max-height: 150px; border-radius: 12px;">
+                            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;">
+                                <button id="confirmImageBtn" class="btn btn-primary" style="padding: 6px 20px; font-size: 14px;">✅ Kirim ke AI</button>
+                                <button id="removeImageBtn" class="btn btn-secondary" style="padding: 6px 20px; font-size: 14px;">✖ Batal</button>
+                            </div>
+                        </div>
                     </div>
-                    <button id="cariResepBtn" class="btn btn-primary">Cari Resep</button>
-                    <div id="hasilResep" style="margin-top: 16px;"></div>
+
+                    <!-- Input Chat -->
+                    <div class="chat-input-area" style="display: flex; gap: 8px; margin-top: 12px;">
+                        <input type="text" id="chatInput" placeholder="Tanya tentang resep..." class="form-input" style="flex: 1;">
+                        <button id="chatSendBtn" class="btn btn-primary" style="padding: 12px 20px;">Kirim</button>
+                    </div>
+
+                    <!-- Hasil Chat -->
+                    <div id="chatHistory" style="margin-top: 16px; max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                        <p class="empty-state">💬 Kirim pesan atau upload gambar untuk memulai!</p>
+                    </div>
+
+                    <!-- Tombol Reset Chat -->
+                    <button id="resetChatBtn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px; margin-top: 8px;">🔄 Reset Chat</button>
                 </div>
             </section>
 

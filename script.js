@@ -18,6 +18,7 @@ function buildUrl(path, params = {}) {
 let currentUser = null;
 let currentProfile = null;
 let todayFoods = [];
+let beratChart = null;
 
 // ========== AMBIL ACCESS TOKEN ==========
 function getAccessToken() {
@@ -55,11 +56,6 @@ const daftarMakanan = document.getElementById('daftarMakanan');
 const beratBadan = document.getElementById('beratBadan');
 const simpanBeratBtn = document.getElementById('simpanBeratBtn');
 
-// ========== ASISTEN RESEP ==========
-const cariResepBtn = document.getElementById('cariResepBtn');
-const bahanResep = document.getElementById('bahanResep');
-const hasilResep = document.getElementById('hasilResep');
-
 // ========== FUNGSI AUTENTIKASI ==========
 
 async function checkSession() {
@@ -69,6 +65,7 @@ async function checkSession() {
         showApp();
         await loadProfile();
         await loadTodayFoods();
+        await loadWeightChart();
     } else {
         showLogin();
     }
@@ -91,17 +88,36 @@ async function login(email, password) {
         }
 
         const data = await response.json();
-        currentUser = data.user;
+        console.log('🔑 Login berhasil');
         localStorage.setItem('supabaseSession', JSON.stringify(data));
+        currentUser = data.user;
         showApp();
         await loadProfile();
         await loadTodayFoods();
+        await loadWeightChart();
+        alert('✅ Login berhasil!');
+
     } catch (error) {
         alert('❌ Login gagal: ' + error.message);
     }
 }
 
-async function register(email, password) {
+async function register(email, password, confirmPassword) {
+    if (password !== confirmPassword) {
+        alert('❌ Password dan konfirmasi password tidak cocok!');
+        return;
+    }
+
+    if (password.length < 6) {
+        alert('❌ Password minimal 6 karakter!');
+        return;
+    }
+
+    const registerBtn = document.getElementById('registerBtn');
+    const originalText = registerBtn.textContent;
+    registerBtn.textContent = '⏳ Mendaftar...';
+    registerBtn.disabled = true;
+
     try {
         const response = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
             method: 'POST',
@@ -118,13 +134,25 @@ async function register(email, password) {
         }
 
         const data = await response.json();
-        currentUser = data.user;
+        console.log('📝 Register berhasil');
         localStorage.setItem('supabaseSession', JSON.stringify(data));
+        currentUser = data.user;
+        alert('✅ Pendaftaran berhasil! Email verifikasi telah dikirim ke ' + email);
+        
+        document.getElementById('registerEmail').value = '';
+        document.getElementById('registerPassword').value = '';
+        document.getElementById('registerConfirmPassword').value = '';
+        
         showApp();
         await loadProfile();
         await loadTodayFoods();
+        await loadWeightChart();
+
     } catch (error) {
         alert('❌ Registrasi gagal: ' + error.message);
+    } finally {
+        registerBtn.textContent = originalText;
+        registerBtn.disabled = false;
     }
 }
 
@@ -153,6 +181,12 @@ async function logout() {
 async function loadProfile() {
     if (!currentUser) return;
 
+    const token = getAccessToken();
+    if (!token) {
+        console.error('Token tidak ditemukan');
+        return;
+    }
+
     try {
         const url = buildUrl('/rest/v1/profil_pengguna', {
             user_id: `eq.${currentUser.id}`,
@@ -161,7 +195,7 @@ async function loadProfile() {
 
         const response = await fetch(url, {
             headers: {
-                'Authorization': `Bearer ${getAccessToken()}`
+                'Authorization': `Bearer ${token}`
             }
         });
 
@@ -189,6 +223,9 @@ async function loadProfile() {
 }
 
 async function createDefaultProfile() {
+    const token = getAccessToken();
+    if (!token) return;
+
     try {
         const url = buildUrl('/rest/v1/profil_pengguna');
 
@@ -196,7 +233,7 @@ async function createDefaultProfile() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getAccessToken()}`
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
                 user_id: currentUser.id,
@@ -212,114 +249,124 @@ async function createDefaultProfile() {
 }
 
 // ========== SET TARGET KALORI ==========
-setTargetBtn.addEventListener('click', async function() {
-    const target = parseInt(targetKaloriInput.value);
+if (setTargetBtn) {
+    setTargetBtn.addEventListener('click', async function() {
+        const target = parseInt(targetKaloriInput.value);
 
-    if (isNaN(target) || target <= 0) {
-        alert('⚠️ Masukkan target kalori yang valid (angka positif)!');
-        return;
-    }
-
-    if (!currentUser) {
-        alert('⚠️ Silakan login terlebih dahulu!');
-        return;
-    }
-
-    const token = getAccessToken();
-    if (!token) {
-        alert('⚠️ Sesi Anda habis. Silakan login ulang.');
-        return;
-    }
-
-    try {
-        const url = buildUrl('/rest/v1/profil_pengguna', {
-            user_id: `eq.${currentUser.id}`
-        });
-
-        const response = await fetch(url, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                target_kalori: target,
-                updated_at: new Date().toISOString()
-            })
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        if (isNaN(target) || target <= 0) {
+            alert('⚠️ Masukkan target kalori yang valid (angka positif)!');
+            return;
         }
 
-        targetKaloriDisplay.textContent = target;
-        alert('✅ Target kalori berhasil diupdate!');
-        
-        await loadProfile();
-        await loadTodayFoods();
+        if (!currentUser) {
+            alert('⚠️ Silakan login terlebih dahulu!');
+            return;
+        }
 
-    } catch (error) {
-        alert('❌ Gagal update target: ' + error.message);
-        console.error('Error detail:', error);
-    }
-});
+        const token = getAccessToken();
+        if (!token) {
+            alert('⚠️ Sesi Anda habis. Silakan login ulang.');
+            return;
+        }
+
+        try {
+            const url = buildUrl('/rest/v1/profil_pengguna', {
+                user_id: `eq.${currentUser.id}`
+            });
+
+            const response = await fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    target_kalori: target,
+                    updated_at: new Date().toISOString()
+                })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+
+            targetKaloriDisplay.textContent = target;
+            alert('✅ Target kalori berhasil diupdate!');
+            await loadProfile();
+            await loadTodayFoods();
+
+        } catch (error) {
+            alert('❌ Gagal update target: ' + error.message);
+            console.error('Error detail:', error);
+        }
+    });
+}
 
 // ========== SIMPAN BERAT BADAN ==========
-simpanBeratBtn.addEventListener('click', async function() {
-    const berat = parseFloat(beratBadan.value);
+if (simpanBeratBtn) {
+    simpanBeratBtn.addEventListener('click', async function() {
+        const berat = parseFloat(beratBadan.value);
 
-    if (isNaN(berat) || berat <= 0) {
-        alert('⚠️ Masukkan berat badan yang valid (angka positif, contoh: 65)!');
-        return;
-    }
-
-    if (!currentUser) {
-        alert('⚠️ Silakan login terlebih dahulu!');
-        return;
-    }
-
-    const token = getAccessToken();
-    if (!token) {
-        alert('⚠️ Sesi Anda habis. Silakan login ulang.');
-        return;
-    }
-
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const url = buildUrl('/rest/v1/riwayat_berat');
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                user_id: currentUser.id,
-                berat: berat,
-                tanggal: today
-            })
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        if (isNaN(berat) || berat <= 0) {
+            alert('⚠️ Masukkan berat badan yang valid (angka positif, contoh: 65)!');
+            return;
         }
 
-        alert('✅ Berat badan berhasil disimpan!');
-        beratBadan.value = '';
+        if (!currentUser) {
+            alert('⚠️ Silakan login terlebih dahulu!');
+            return;
+        }
 
-    } catch (error) {
-        alert('❌ Gagal menyimpan berat: ' + error.message);
-        console.error('Error detail:', error);
-    }
-});
+        const token = getAccessToken();
+        if (!token) {
+            alert('⚠️ Sesi Anda habis. Silakan login ulang.');
+            return;
+        }
+
+        try {
+            const today = new Date().toISOString().split('T')[0];
+            const url = buildUrl('/rest/v1/riwayat_berat');
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    user_id: currentUser.id,
+                    berat: berat,
+                    tanggal: today
+                })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+
+            alert('✅ Berat badan berhasil disimpan!');
+            beratBadan.value = '';
+            await loadWeightChart();
+
+        } catch (error) {
+            alert('❌ Gagal menyimpan berat: ' + error.message);
+            console.error('Error detail:', error);
+        }
+    });
+}
 
 // ========== FUNGSI MAKANAN ==========
 
 async function loadTodayFoods() {
     if (!currentUser) return;
+
+    const token = getAccessToken();
+    if (!token) {
+        daftarMakanan.innerHTML = '<p class="empty-state">❌ Sesi habis. Silakan login ulang.</p>';
+        return;
+    }
 
     try {
         const today = new Date().toISOString().split('T')[0];
@@ -331,7 +378,7 @@ async function loadTodayFoods() {
 
         const response = await fetch(url, {
             headers: {
-                'Authorization': `Bearer ${getAccessToken()}`
+                'Authorization': `Bearer ${token}`
             }
         });
 
@@ -349,7 +396,7 @@ async function loadTodayFoods() {
 
 async function addFood(nama, porsi = 1) {
     if (!currentUser) {
-        alert('Silakan login terlebih dahulu!');
+        alert('Silakan login ter dahulu!');
         return;
     }
 
@@ -360,7 +407,6 @@ async function addFood(nama, porsi = 1) {
     }
 
     try {
-        // Cari makanan
         const searchUrl = buildUrl('/rest/v1/makanan', {
             nama: `ilike.%${encodeURIComponent(nama)}%`,
             limit: 1
@@ -372,7 +418,10 @@ async function addFood(nama, porsi = 1) {
             }
         });
 
-        if (!searchResponse.ok) throw new Error('Gagal mencari makanan');
+        if (!searchResponse.ok) {
+            const errorText = await searchResponse.text();
+            throw new Error(`HTTP ${searchResponse.status}: ${errorText}`);
+        }
 
         const searchResult = await searchResponse.json();
 
@@ -561,100 +610,344 @@ function showApp() {
     }
 }
 
-// ========== ASISTEN RESEP ==========
-cariResepBtn.addEventListener('click', async function() {
-    const bahan = bahanResep.value.toLowerCase().split(',').map(b => b.trim()).filter(b => b);
+// ========== TAB LOGIN / REGISTER ==========
+function switchTab(tab) {
+    const loginForm = document.getElementById('formLogin');
+    const registerForm = document.getElementById('formRegister');
+    const loginTab = document.getElementById('tabLoginBtn');
+    const registerTab = document.getElementById('tabRegisterBtn');
+    const subtitle = document.getElementById('formSubtitle');
 
-    if (bahan.length === 0) {
-        hasilResep.innerHTML = '<p class="empty-state">🌿 Masukkan bahan yang tersedia!</p>';
-        return;
+    if (tab === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        loginTab.classList.add('active');
+        registerTab.classList.remove('active');
+        subtitle.textContent = 'Masuk untuk mulai mencatat';
+    } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        registerTab.classList.add('active');
+        loginTab.classList.remove('active');
+        subtitle.textContent = 'Daftar akun baru';
     }
+}
 
-    hasilResep.innerHTML = '<p class="empty-state">⏳ Mencari resep...</p>';
+// ========== GRAFIK PROGRES BERAT BADAN ==========
+async function loadWeightChart() {
+    if (!currentUser) return;
+
+    const token = getAccessToken();
+    if (!token) return;
 
     try {
-        const token = getAccessToken();
-        const headers = {};
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
+        const url = buildUrl('/rest/v1/riwayat_berat', {
+            user_id: `eq.${currentUser.id}`,
+            order: 'tanggal.asc',
+            select: 'tanggal,berat'
+        });
 
-        // Buat URL dengan filter bahan
-        let url = buildUrl('/rest/v1/resep', { select: '*' });
-        const filters = bahan.map(b => `bahan=ilike.%25${b}%25`).join('&');
-        if (filters) {
-            url += `&${filters}`;
-        }
+        const response = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-        const response = await fetch(url, { headers });
+        if (!response.ok) throw new Error('Gagal mengambil data berat');
 
-        if (!response.ok) throw new Error('Gagal mencari resep di database');
+        const data = await response.json();
 
-        let data = await response.json();
-
-        if (data.length > 0) {
-            hasilResep.innerHTML = data.map(r => `
-                <div class="catatan-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                    <div class="info" style="width: 100%;">
-                        <span class="nama">🥗 ${r.judul}</span>
-                        <span class="detail" style="margin-top: 4px;">${r.cara}</span>
-                        <span class="detail" style="margin-top: 6px;">
-                            🔥 ${r.kalori} kkal · 💪 ${r.protein}g · 🥑 ${r.lemak}g · 🍚 ${r.karbo}g
-                        </span>
-                    </div>
-                </div>
-            `).join('');
+        const canvas = document.getElementById('beratChart');
+        if (data.length === 0) {
+            canvas.style.display = 'none';
             return;
         }
 
-        hasilResep.innerHTML = `
-            <p class="empty-state">🌿 Belum ada resep dengan bahan itu di database.</p>
-            <p class="empty-state" style="font-size: 14px;">💡 Coba bahan lain, atau tambahkan resep baru!</p>
-        `;
+        canvas.style.display = 'block';
+
+        const labels = data.map(d => new Date(d.tanggal).toLocaleDateString('id-ID'));
+        const weights = data.map(d => d.berat);
+
+        const ctx = canvas.getContext('2d');
+
+        if (beratChart) {
+            beratChart.destroy();
+        }
+
+        beratChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Berat Badan (kg)',
+                    data: weights,
+                    borderColor: '#A8C3A0',
+                    backgroundColor: 'rgba(168, 195, 160, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: '#A8C3A0',
+                    pointBorderColor: '#FFFFFF'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' kg';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(168, 195, 160, 0.1)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
 
     } catch (error) {
-        hasilResep.innerHTML = `<p class="empty-state">❌ Error: ${error.message}</p>`;
-        console.error('Error detail:', error);
+        console.error('Error load chart:', error);
     }
-});
+}
+
+// ========== REKOMENDASI MENU AI ==========
+const rekomendasiMenuBtn = document.getElementById('rekomendasiMenuBtn');
+if (rekomendasiMenuBtn) {
+    rekomendasiMenuBtn.addEventListener('click', async function() {
+        console.log('🔄 Tombol Rekomendasi diklik');
+        const btn = this;
+        const hasilDiv = document.getElementById('hasilRekomendasi');
+        
+        if (!currentUser) {
+            alert('Silakan login ter dahulu!');
+            return;
+        }
+
+        const totalKaloriSekarang = parseInt(document.getElementById('totalKalori').textContent) || 0;
+        const targetKalori = parseInt(targetKaloriDisplay.textContent) || 2000;
+        const sisaKalori = targetKalori - totalKaloriSekarang;
+
+        if (sisaKalori <= 0) {
+            hasilDiv.innerHTML = '<p class="empty-state">✅ Kalori hari ini sudah terpenuhi! Istirahat atau olahraga ringan.</p>';
+            return;
+        }
+
+        btn.textContent = '⏳ Menghasilkan...';
+        btn.disabled = true;
+        hasilDiv.innerHTML = '<p class="empty-state">🤖 AI sedang menyusun menu sehat untuk Anda...</p>';
+
+        try {
+            const response = await fetch('/api/gemini', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `Saya memiliki sisa kalori ${sisaKalori} kkal untuk hari ini. 
+                             Berikan rekomendasi menu untuk sarapan, makan siang, dan makan malam. 
+                             Total kalori tidak boleh melebihi ${sisaKalori} kkal.
+                             Respons harus dalam format JSON dengan struktur:
+                             {
+                                 "sarapan": { "nama": "...", "kalori": angka },
+                                 "makan_siang": { "nama": "...", "kalori": angka },
+                                 "makan_malam": { "nama": "...", "kalori": angka },
+                                 "total": angka
+                             }`
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            const cleanJson = data.reply.replace(/```json\s*|\s*```/g, '').trim();
+            const menu = JSON.parse(cleanJson);
+
+            const total = menu.total || (menu.sarapan.kalori + menu.makan_siang.kalori + menu.makan_malam.kalori);
+
+            hasilDiv.innerHTML = `
+                <div class="catatan-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <div class="info" style="width: 100%;">
+                        <span class="nama">🍽️ Menu Hari Ini (${sisaKalori} kkal tersisa)</span>
+                        <span class="detail" style="margin-top: 4px;">🌅 Sarapan: ${menu.sarapan.nama} (${menu.sarapan.kalori} kkal)</span>
+                        <span class="detail">☀️ Makan Siang: ${menu.makan_siang.nama} (${menu.makan_siang.kalori} kkal)</span>
+                        <span class="detail">🌙 Makan Malam: ${menu.makan_malam.nama} (${menu.makan_malam.kalori} kkal)</span>
+                        <span class="detail" style="margin-top: 6px; background: rgba(168, 195, 160, 0.1); padding: 8px; border-radius: 8px;">
+                            📊 Total: ${total} kkal
+                        </span>
+                        <span class="detail" style="font-size: 12px; color: #A8C3A0; margin-top: 4px;">✨ Dihasilkan oleh AI</span>
+                    </div>
+                </div>
+            `;
+
+        } catch (error) {
+            hasilDiv.innerHTML = `<p class="empty-state">❌ Gagal mendapatkan rekomendasi: ${error.message}</p>`;
+            console.error('Error detail:', error);
+        } finally {
+            btn.textContent = '✨ Buat Rekomendasi';
+            btn.disabled = false;
+        }
+    });
+} else {
+    console.error('❌ Tombol rekomendasi tidak ditemukan di DOM');
+}
+
+// ========== ASISTEN RESEP ==========
+const cariResepBtn = document.getElementById('cariResepBtn');
+if (cariResepBtn) {
+    cariResepBtn.addEventListener('click', async function() {
+        console.log('🔄 Tombol Cari Resep diklik');
+        const bahan = document.getElementById('bahanResep').value.toLowerCase().split(',').map(b => b.trim()).filter(b => b);
+        const hasilResep = document.getElementById('hasilResep');
+
+        if (bahan.length === 0) {
+            hasilResep.innerHTML = '<p class="empty-state">🌿 Masukkan bahan yang tersedia!</p>';
+            return;
+        }
+
+        hasilResep.innerHTML = '<p class="empty-state">⏳ Mencari resep...</p>';
+
+        try {
+            const token = getAccessToken();
+            const headers = { 'apikey': SUPABASE_ANON_KEY };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            let url = buildUrl('/rest/v1/resep', { select: '*' });
+            const filters = bahan.map(b => `bahan=ilike.%25${b}%25`).join('&');
+            if (filters) url += `&${filters}`;
+
+            const dbResponse = await fetch(url, { headers });
+
+            if (dbResponse.ok) {
+                const data = await dbResponse.json();
+                if (data.length > 0) {
+                    hasilResep.innerHTML = data.map(r => `
+                        <div class="catatan-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div class="info" style="width: 100%;">
+                                <span class="nama">🥗 ${r.judul}</span>
+                                <span class="detail" style="margin-top: 4px;">${r.cara}</span>
+                                <span class="detail" style="margin-top: 6px;">
+                                    🔥 ${r.kalori} kkal · 💪 ${r.protein}g · 🥑 ${r.lemak}g · 🍚 ${r.karbo}g
+                                </span>
+                            </div>
+                        </div>
+                    `).join('');
+                    return;
+                }
+            }
+
+            // Jika tidak ada di database
+            hasilResep.innerHTML = `
+                <p class="empty-state">🌿 Belum ada resep dengan bahan itu di database.</p>
+                <p class="empty-state" style="font-size: 14px;">💡 Coba bahan lain, atau tambahkan resep baru!</p>
+            `;
+
+        } catch (error) {
+            hasilResep.innerHTML = `<p class="empty-state">❌ Error: ${error.message}</p>`;
+            console.error('Error detail:', error);
+        }
+    });
+} else {
+    console.error('❌ Tombol cari resep tidak ditemukan di DOM');
+}
 
 // ========== EVENT LISTENER ==========
 
-loginBtn.addEventListener('click', function() {
-    const email = loginEmail.value.trim();
-    const password = loginPassword.value.trim();
-    if (email && password) {
-        login(email, password);
-    } else {
-        alert('Masukkan email dan password!');
-    }
-});
+// Login
+if (loginBtn) {
+    loginBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value;
+        if (email && password) {
+            login(email, password);
+        } else {
+            alert('Masukkan email dan password!');
+        }
+    });
+}
 
-registerBtn.addEventListener('click', function() {
-    const email = loginEmail.value.trim();
-    const password = loginPassword.value.trim();
-    if (email && password) {
-        register(email, password);
-    } else {
-        alert('Masukkan email dan password!');
-    }
-});
+// Register
+if (registerBtn) {
+    registerBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('registerEmail').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('registerConfirmPassword').value;
+        
+        if (email && password) {
+            register(email, password, confirmPassword);
+        } else {
+            alert('Masukkan email dan password!');
+        }
+    });
+}
 
-logoutBtn.addEventListener('click', logout);
+// Tab
+const tabLoginBtn = document.getElementById('tabLoginBtn');
+const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+const switchToRegister = document.getElementById('switchToRegister');
+const switchToLogin = document.getElementById('switchToLogin');
 
-tambahMakananBtn.addEventListener('click', function() {
-    const nama = namaMakanan.value.trim();
-    const porsi = parseFloat(porsiMakanan.value) || 1;
-    if (nama) {
-        addFood(nama, porsi);
-        namaMakanan.value = '';
-        porsiMakanan.value = '1';
-    } else {
-        alert('Masukkan nama makanan!');
+if (tabLoginBtn) tabLoginBtn.addEventListener('click', function() { switchTab('login'); });
+if (tabRegisterBtn) tabRegisterBtn.addEventListener('click', function() { switchTab('register'); });
+if (switchToRegister) switchToRegister.addEventListener('click', function(e) { e.preventDefault(); switchTab('register'); });
+if (switchToLogin) switchToLogin.addEventListener('click', function(e) { e.preventDefault(); switchTab('login'); });
+
+// Logout
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', logout);
+}
+
+// Tambah Makanan
+if (tambahMakananBtn) {
+    tambahMakananBtn.addEventListener('click', function() {
+        const nama = namaMakanan.value.trim();
+        const porsi = parseFloat(porsiMakanan.value) || 1;
+        if (nama) {
+            addFood(nama, porsi);
+            namaMakanan.value = '';
+            porsiMakanan.value = '1';
+        } else {
+            alert('Masukkan nama makanan!');
+        }
+    });
+}
+
+// Refresh Chart
+const refreshChartBtn = document.getElementById('refreshChartBtn');
+if (refreshChartBtn) {
+    refreshChartBtn.addEventListener('click', loadWeightChart);
+}
+
+// ========== TOGGLE PASSWORD ==========
+function setupPasswordToggle(toggleId, inputId) {
+    const toggle = document.getElementById(toggleId);
+    const input = document.getElementById(inputId);
+    if (toggle && input) {
+        toggle.addEventListener('click', function() {
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
     }
-});
+}
 
 // ========== INISIALISASI ==========
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Aplikasi Harian Sehatku dimulai');
+    
+    setupPasswordToggle('toggleLoginPassword', 'loginPassword');
+    setupPasswordToggle('toggleRegisterPassword', 'registerPassword');
+    setupPasswordToggle('toggleRegisterConfirmPassword', 'registerConfirmPassword');
+    
     checkSession();
 });
