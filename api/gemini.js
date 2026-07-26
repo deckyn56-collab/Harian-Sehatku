@@ -1,6 +1,5 @@
 // ========== API GEMINI PROXY (Vercel Serverless Function) ==========
 export default async function handler(req, res) {
-    // Hanya terima metode POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -17,7 +16,6 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'No message or image provided' });
         }
 
-        // Bangun konten untuk Gemini
         const contents = [];
         
         if (history && history.length > 0) {
@@ -49,9 +47,9 @@ export default async function handler(req, res) {
             parts: parts
         });
 
-        // Panggil Gemini API
+        // GEMINI 1.5 FLASH (STABLE)
         const response = await fetch(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent',
+            'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
             {
                 method: 'POST',
                 headers: {
@@ -93,4 +91,4 @@ export default async function handler(req, res) {
         console.error('Gemini API error:', error);
         return res.status(500).json({ error: error.message || 'Terjadi kesalahan' });
     }
-    }
+}
