@@ -1,6 +1,5 @@
 // ========== API GROQ PROXY (Vercel Serverless Function) ==========
 export default async function handler(req, res) {
-    // Hanya terima metode POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -17,7 +16,6 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'No message or image provided' });
         }
 
-        // Buat pesan dari history chat
         const messages = [
             {
                 role: 'system',
@@ -36,7 +34,6 @@ export default async function handler(req, res) {
             }
         ];
 
-        // Tambahkan history chat
         if (history && history.length > 0) {
             history.forEach(msg => {
                 if (msg.role !== 'image') {
@@ -48,13 +45,12 @@ export default async function handler(req, res) {
             });
         }
 
-        // Tambahkan pesan terakhir
         messages.push({
             role: 'user',
             content: message || 'Analisis gambar bahan makanan ini dan berikan rekomendasi resep.'
         });
 
-        // Panggil Groq API
+        // Ganti model di sini
         const response = await fetch(
             'https://api.groq.com/openai/v1/chat/completions',
             {
@@ -64,7 +60,7 @@ export default async function handler(req, res) {
                     'Authorization': `Bearer ${GROQ_API_KEY}`
                 },
                 body: JSON.stringify({
-                    model: 'llama-3.1-70b-versatile', // Model Groq terbaik dan gratis
+                    model: 'llama-3.3-70b-versatile', // <-- MODEL BARU
                     messages: messages,
                     temperature: 0.7
                 })
@@ -85,4 +81,4 @@ export default async function handler(req, res) {
         console.error('Groq API error:', error);
         return res.status(500).json({ error: error.message || 'Terjadi kesalahan' });
     }
-                    }
+}
