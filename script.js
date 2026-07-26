@@ -316,7 +316,7 @@ if (simpanBeratBtn) {
         const berat = parseFloat(beratBadan.value);
 
         if (isNaN(berat) || berat <= 0) {
-            alert('⚠️ Masukkan berat badan yang valid (angka positif, contoh: 65)!');
+            alert('⚠️ Masukkan berat badan yang valid (angka positivo, contoh: 65)!');
             return;
         }
 
@@ -723,11 +723,11 @@ async function loadWeightChart() {
     }
 }
 
-// ========== FUNGSI OPENAI ==========
-async function callOpenAI(message, imageBase64 = null, history = []) {
+// ========== FUNGSI GROQ ==========
+async function callGroq(message, imageBase64 = null, history = []) {
     try {
-        console.log('📤 Memanggil OpenAI API...');
-        const response = await fetch('/api/openai', {
+        console.log('📤 Memanggil Groq API...');
+        const response = await fetch('/api/groq', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -747,11 +747,11 @@ async function callOpenAI(message, imageBase64 = null, history = []) {
         }
 
         const data = await response.json();
-        console.log('✅ OpenAI berhasil dipanggil');
+        console.log('✅ Groq berhasil dipanggil');
         return data.reply;
 
     } catch (error) {
-        console.error('❌ OpenAI error:', error);
+        console.error('❌ Groq error:', error);
         throw error;
     }
 }
@@ -783,7 +783,7 @@ if (rekomendasiMenuBtn) {
         hasilDiv.innerHTML = '<p class="empty-state">🤖 AI sedang menyusun menu sehat untuk Anda...</p>';
 
         try {
-            const reply = await callOpenAI(
+            const reply = await callGroq(
                 `Saya memiliki sisa kalori ${sisaKalori} kkal untuk hari ini. 
                  Berikan rekomendasi menu untuk sarapan, makan siang, dan makan malam. 
                  Total kalori tidak boleh melebihi ${sisaKalori} kkal.
