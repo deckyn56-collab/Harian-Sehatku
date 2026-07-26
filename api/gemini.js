@@ -17,6 +17,7 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'No message or image provided' });
         }
 
+        // Bangun konten untuk Gemini
         const contents = [];
         
         if (history && history.length > 0) {
@@ -48,7 +49,7 @@ export default async function handler(req, res) {
             parts: parts
         });
 
-        // MENGGUNAKAN GEMINI 2.0 FLASH EXP DENGAN URL YANG BENAR
+        // Panggil Gemini API dengan API Key via query parameter
         const response = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`,
             {
@@ -70,7 +71,9 @@ export default async function handler(req, res) {
                                 "protein": angka,
                                 "lemak": angka,
                                 "karbo": angka
-                            }`
+                            }
+                            Jika pengguna memberikan gambar, identifikasi bahan-bahan yang terlihat.
+                            Jika multi-turn chat, jawab dengan ramah dan informatif.`
                         }]
                     },
                     contents: contents
@@ -91,7 +94,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ reply });
 
     } catch (error) {
-        console.error('Gemini API error:', error);
+        console.error('❌ Gemini API error:', error);
         return res.status(500).json({ error: error.message || 'Terjadi kesalahan' });
     }
 }
