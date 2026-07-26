@@ -18,6 +18,8 @@ function buildUrl(path, params = {}) {
 let currentUser = null;
 let currentProfile = null;
 let todayFoods = [];
+let chatHistory = [];
+let currentImageBase64 = null;
 let beratChart = null;
 
 // ========== AMBIL ACCESS TOKEN ==========
@@ -55,6 +57,11 @@ const daftarMakanan = document.getElementById('daftarMakanan');
 
 const beratBadan = document.getElementById('beratBadan');
 const simpanBeratBtn = document.getElementById('simpanBeratBtn');
+
+// ========== ASISTEN RESEP ==========
+const cariResepBtn = document.getElementById('cariResepBtn');
+const bahanResep = document.getElementById('bahanResep');
+const hasilResep = document.getElementById('hasilResep');
 
 // ========== FUNGSI AUTENTIKASI ==========
 
@@ -716,11 +723,11 @@ async function loadWeightChart() {
     }
 }
 
-// ========== FUNGSI GEMINI AI (PANGGIL SERVERLESS) ==========
-async function callGemini(message, imageBase64 = null, history = []) {
+// ========== FUNGSI OPENAI ==========
+async function callOpenAI(message, imageBase64 = null, history = []) {
     try {
-        console.log('📤 Memanggil Gemini API...');
-        const response = await fetch('/api/gemini', {
+        console.log('📤 Memanggil OpenAI API...');
+        const response = await fetch('/api/openai', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -740,11 +747,11 @@ async function callGemini(message, imageBase64 = null, history = []) {
         }
 
         const data = await response.json();
-        console.log('✅ Gemini berhasil dipanggil');
+        console.log('✅ OpenAI berhasil dipanggil');
         return data.reply;
 
     } catch (error) {
-        console.error('❌ Gemini error:', error);
+        console.error('❌ OpenAI error:', error);
         throw error;
     }
 }
@@ -776,7 +783,7 @@ if (rekomendasiMenuBtn) {
         hasilDiv.innerHTML = '<p class="empty-state">🤖 AI sedang menyusun menu sehat untuk Anda...</p>';
 
         try {
-            const reply = await callGemini(
+            const reply = await callOpenAI(
                 `Saya memiliki sisa kalori ${sisaKalori} kkal untuk hari ini. 
                  Berikan rekomendasi menu untuk sarapan, makan siang, dan makan malam. 
                  Total kalori tidak boleh melebihi ${sisaKalori} kkal.
@@ -822,11 +829,10 @@ if (rekomendasiMenuBtn) {
 }
 
 // ========== ASISTEN RESEP ==========
-const cariResepBtn = document.getElementById('cariResepBtn');
 if (cariResepBtn) {
     cariResepBtn.addEventListener('click', async function() {
         console.log('🔄 Tombol Cari Resep diklik');
-        const bahan = document.getElementById('bahanResep').value.toLowerCase().split(',').map(b => b.trim()).filter(b => b);
+        const bahan = bahanResep.value.toLowerCase().split(',').map(b => b.trim()).filter(b => b);
         const hasilResep = document.getElementById('hasilResep');
 
         if (bahan.length === 0) {
