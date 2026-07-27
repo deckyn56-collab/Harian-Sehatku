@@ -728,10 +728,10 @@ async function loadWeightChart() {
     }
 }
 
-// ========== FUNGSI GEMINI ==========
+// ========== FUNGSI GEMINI 3.6 FLASH ==========
 async function callGemini(message, imageBase64 = null, history = []) {
     try {
-        console.log('📤 Memanggil Gemini API...');
+        console.log('📤 Memanggil Gemini 3.6 Flash API...');
         const response = await fetch('/api/gemini', {
             method: 'POST',
             headers: {
@@ -752,11 +752,11 @@ async function callGemini(message, imageBase64 = null, history = []) {
         }
 
         const data = await response.json();
-        console.log('✅ Gemini berhasil dipanggil');
+        console.log('✅ Gemini 3.6 Flash berhasil dipanggil');
         return data.reply;
 
     } catch (error) {
-        console.error('❌ Gemini error:', error);
+        console.error('❌ Gemini 3.6 Flash error:', error);
         throw error;
     }
 }
@@ -816,7 +816,7 @@ if (rekomendasiMenuBtn) {
                         <span class="detail" style="margin-top: 6px; background: rgba(168, 195, 160, 0.1); padding: 8px; border-radius: 8px;">
                             📊 Total: ${total} kkal
                         </span>
-                        <span class="detail" style="font-size: 12px; color: #A8C3A0; margin-top: 4px;">✨ Dihasilkan oleh AI</span>
+                        <span class="detail" style="font-size: 12px; color: #A8C3A0; margin-top: 4px;">✨ Dihasilkan oleh Gemini 3.6 Flash</span>
                     </div>
                 </div>
             `;
@@ -974,7 +974,7 @@ function setupPasswordToggle(toggleId, inputId) {
 
 // ========== INISIALISASI ==========
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Aplikasi Harian Sehatku dimulai');
+    console.log('🚀 Aplikasi Harian Sehatku dengan Gemini 3.6 Flash dimulai');
     
     setupPasswordToggle('toggleLoginPassword', 'loginPassword');
     setupPasswordToggle('toggleRegisterPassword', 'registerPassword');
